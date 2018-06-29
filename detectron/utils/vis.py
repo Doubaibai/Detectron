@@ -36,6 +36,8 @@ envu.set_up_matplotlib()
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
+import pickle as pkl
+
 plt.rcParams['pdf.fonttype'] = 42  # For editing in Adobe Illustrator
 
 
@@ -418,4 +420,8 @@ def extract_mask(
             continue
         masks_all.append(masks[:, :, i])
         scores.append(score)
-    return masks_all, scores
+    
+    # Save masks and scores
+    output_file = os.path.join(output_dir, im_name.split('/')[-1]+'.pkl')
+    with open(output_file, 'wb') as f:
+        pkl.dump((masks_all, scores), f, pickle.HIGHEST_PROTOCOL)
