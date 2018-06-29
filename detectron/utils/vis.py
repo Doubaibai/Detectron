@@ -424,4 +424,4 @@ def extract_mask(
     # Save masks and scores
     output_file = os.path.join(output_dir, im_name.split('/')[-1]+'.pkl')
     with open(output_file, 'wb') as f:
-        pkl.dump((masks_all, scores), f, pickle.HIGHEST_PROTOCOL)
+        pkl.dump((masks_all, scores), f, pkl.HIGHEST_PROTOCOL)
