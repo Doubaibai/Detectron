@@ -387,3 +387,35 @@ def vis_one_image(
     output_name = os.path.basename(im_name) + '.' + ext
     fig.savefig(os.path.join(output_dir, '{}'.format(output_name)), dpi=dpi)
     plt.close('all')
+
+def extract_mask(
+        im, im_name, output_dir, boxes, segms=None, keypoints=None, thresh=0.9,
+        kp_thresh=2, dataset=None):
+    """Visual debugging of detections."""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    if isinstance(boxes, list):
+        boxes, segms, keypoints, classes = convert_from_cls_format(
+            boxes, segms, keypoints)
+
+    if boxes is None or boxes.shape[0] == 0 or max(boxes[:, 4]) < thresh:
+        return
+
+    if segms is not None and len(segms) > 0:
+        masks = mask_util.decode(segms)
+
+    # Display in largest to smallest order to reduce occlusion
+    areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
+    sorted_inds = np.argsort(-areas)
+
+    masks_all = []
+    scores = []
+    for i in sorted_inds:
+        bbox = boxes[i, :4]
+        score = boxes[i, -1]
+        if score < thresh:
+            continue
+        masks_all.append(masks[:, :, i])
+        scores.append(score)
+    return masks_all, scores
