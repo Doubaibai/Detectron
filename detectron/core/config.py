@@ -1117,7 +1117,11 @@ def load_cfg(cfg_to_load):
             # yaml object encoding: !!python/object/new:<module>.<object>
             old_module, new_module = 'new:' + old_module, 'new:' + new_module
             cfg_to_load = cfg_to_load.replace(old_module, new_module)
-    return yaml.danger_load(cfg_to_load)
+    try:
+     conf = yaml.danger_load(cfg_to_load)
+    except:
+     conf = yaml.load(cfg_to_load)
+    return conf
 
 
 def merge_cfg_from_file(cfg_filename):
